@@ -107,29 +107,61 @@ export const ClienteDashboard = ({ user, setRenderNow, setPedidoAComprar }) => {
       {/* PANEL PRINCIPAL */}
       <section className="flex-1 bg-neutral-900 rounded-xl border border-neutral-800 p-5 shadow-lg">
         {subVista === "perfil" && (
-          <>
-            <h2 className="text-xl text-white font-bold mb-6">Información del Perfil</h2>
-            <div className="space-y-4 max-w-md">
-              <div>
-                <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
-                  Nombre
-                </label>
-                <div className="mt-1 bg-neutral-950 rounded-lg p-3 border border-neutral-800 text-sm text-white">
-                  {user?.nombre}
-                </div>
-              </div>
+  <>
+    <h2 className="text-xl text-white font-bold mb-6">Información del Perfil</h2>
+    <div className="space-y-4 max-w-md">
+      {/* Nombre */}
+      <div>
+        <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
+          Nombre
+        </label>
+        <div className="mt-1 bg-neutral-950 rounded-lg p-3 border border-neutral-800 text-sm text-white">
+          {user?.nombre}
+        </div>
+      </div>
 
-              <div>
-                <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
-                  Correo electrónico
-                </label>
-                <div className="mt-1 bg-neutral-950 rounded-lg p-3 border border-neutral-800 text-sm text-white">
-                  {user?.username}
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+      {/* Correo */}
+      <div>
+        <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
+          Correo electrónico
+        </label>
+        <div className="mt-1 bg-neutral-950 rounded-lg p-3 border border-neutral-800 text-sm text-white">
+          {user?.username}
+        </div>
+      </div>
+
+      {/* Teléfono */}
+      <div>
+        <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
+          Teléfono
+        </label>
+        <div className="mt-1 bg-neutral-950 rounded-lg p-3 border border-neutral-800 text-sm text-white">
+          {user?.telefono || "No registrado"}
+        </div>
+      </div>
+
+      {/* Dirección */}
+      <div>
+        <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
+          Dirección
+        </label>
+        <div className="mt-1 bg-neutral-950 rounded-lg p-3 border border-neutral-800 text-sm text-white">
+          {user?.direccion || "No registrada"}
+        </div>
+      </div>
+
+      {/* ID */}
+      <div>
+        <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
+          ID de Usuario
+        </label>
+        <div className="mt-1 bg-neutral-950 rounded-lg p-3 border border-neutral-800 text-sm text-white">
+          {user?.id}
+        </div>
+      </div>
+    </div>
+  </>
+)}
 
         {subVista === "compras" && (
           <>
