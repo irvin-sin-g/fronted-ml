@@ -56,7 +56,7 @@ export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-white">Crear una Cuenta</h2>
-            <p className="text-neutral-400 mt-0.5 text-xs">Únete a MercaditoLibre hoy mismo</p>
+            <p className="text-neutral-400 mt-0.5 text-xs">Únete a Megaklic hoy mismo</p>
           </div>
         </div>
 
