@@ -34,7 +34,7 @@ export const ClienteDashboard = ({ user, setRenderNow, setPedidoAComprar }) => {
     } catch (err) {
       setError("Error al cargar pedidos.");
       console.error(err);
-    } fontally {
+    } finally {
       setLoading(false);
     }
   };
