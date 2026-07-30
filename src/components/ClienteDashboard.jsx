@@ -150,15 +150,7 @@ export const ClienteDashboard = ({ user, setRenderNow, setPedidoAComprar }) => {
         </div>
       </div>
 
-      {/* ID */}
-      <div>
-        <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
-          ID de Usuario
-        </label>
-        <div className="mt-1 bg-neutral-950 rounded-lg p-3 border border-neutral-800 text-sm text-white">
-          {user?.id}
-        </div>
-      </div>
+      
     </div>
   </>
 )}
