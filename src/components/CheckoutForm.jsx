@@ -4,7 +4,7 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import { apiService } from '../services/apiService';
 import { CreditCard, CheckCircle2, ShieldAlert, Loader2, Play, ShoppingBag, ArrowRight } from 'lucide-react';
 
-const stripePromise = loadStripe('pk_test_51TxbxDFU4qZEKPeUWCG5NAlVwL7C3QkXR5mm4G9vY3c2w3O12WjqR4uLQvtieDqJghqB9iIPNpQF3Mpm8lijyPd600hlYihA5l');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const PaymentForm = ({ venta, onPaymentSuccess }) => {
   const stripe = useStripe();
