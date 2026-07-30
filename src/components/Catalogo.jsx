@@ -41,22 +41,26 @@ export const Catalogo = ({ setRenderNow, user, AddToCart }) => {
   };
 
   const filtroProductos = productos.filter((producto) => {
-  // Búsqueda por texto intacta
+  // 1. Buscador por texto
   const busqueda = 
     producto.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (producto.descripcion && producto.descripcion.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  // Nueva validación flexible para los botones de categorías
-  const busquedaCategorias =
-    selecionCategoria === 'Todos' ||
-    (producto.categoria && (
-      typeof producto.categoria === 'object'
-        ? producto.categoria.nombre?.trim().toLowerCase() === selecionCategoria.trim().toLowerCase()
-        : producto.categoria.toString().trim().toLowerCase() === selecionCategoria.trim().toLowerCase()
-    )) ||
-    String(producto.categoriaId) === String(selecionCategoria);
+  // 2. Filtro de Categoría por Nombre o por ID relacionando con la lista de categorías
+  if (selecionCategoria === 'Todos') return busqueda;
 
-  return busqueda && busquedaCategorias;
+  // Encontramos el ID de la categoría seleccionada en los botones
+  const catObjetoSeleccionado = categorias.find(c => c.nombre.toLowerCase() === selecionCategoria.toLowerCase());
+  const selectedId = catObjetoSeleccionado ? catObjetoSeleccionado.id : null;
+
+  const coincideCategoria = 
+    // Si viene como objeto
+    producto.categoria?.nombre?.toLowerCase() === selecionCategoria.toLowerCase() ||
+    // Si viene como ID plano
+    (selectedId && producto.categoriaId === selectedId) ||
+    (selectedId && producto.categoria?.id === selectedId);
+
+  return busqueda && coincideCategoria;
 });
     
   if (carga) {
