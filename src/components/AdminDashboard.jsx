@@ -527,6 +527,16 @@ const eliminarRegistro = async (tipo, id) => {
             className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-2.5 text-white focus:border-amber-500 outline-none"
           />
         </div>
+        <div>
+          <label className="block text-neutral-400 font-medium mb-1">Descripción</label>
+          <textarea
+            rows="3"
+            value={formProducto.descripcion}
+            onChange={(e) => setFormProducto({ ...formProducto, descripcion: e.target.value })}
+            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-2.5 text-white focus:border-amber-500 outline-none resize-none"
+            placeholder="Breve descripción del producto..."
+          />
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-neutral-400 font-medium mb-1">Precio ($ MXN)</label>
