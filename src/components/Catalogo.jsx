@@ -41,16 +41,23 @@ export const Catalogo = ({ setRenderNow, user, AddToCart }) => {
   };
 
   const filtroProductos = productos.filter((producto) => {
-    const busqueda = 
-      producto.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (producto.descripcion && producto.descripcion.toLowerCase().includes(searchQuery.toLowerCase()));
+  // Búsqueda por texto intacta
+  const busqueda = 
+    producto.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (producto.descripcion && producto.descripcion.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const busquedaCategorias =
-      selecionCategoria === 'Todos' || 
-      (producto.categoria && producto.categoria.nombre === selecionCategoria);    
+  // Nueva validación flexible para los botones de categorías
+  const busquedaCategorias =
+    selecionCategoria === 'Todos' ||
+    (producto.categoria && (
+      typeof producto.categoria === 'object'
+        ? producto.categoria.nombre?.trim().toLowerCase() === selecionCategoria.trim().toLowerCase()
+        : producto.categoria.toString().trim().toLowerCase() === selecionCategoria.trim().toLowerCase()
+    )) ||
+    String(producto.categoriaId) === String(selecionCategoria);
 
-    return busqueda && busquedaCategorias;
-  });
+  return busqueda && busquedaCategorias;
+});
     
   if (carga) {
     return (
