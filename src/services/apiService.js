@@ -1,4 +1,7 @@
-const API_URL = "http://localhost:8080/api/v1/";
+// Detecta la variable de entorno de Vite o usa localhost como respaldo en desarrollo
+const BASE_ENV_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v1/";
+// Asegura que no termine con diagonal duplicada al concatenar
+const API_URL = BASE_ENV_URL.endsWith('/') ? BASE_ENV_URL : `${BASE_ENV_URL}/`;
 
 const getHeaders = () => {
     const token = localStorage.getItem('token');
@@ -232,70 +235,62 @@ export const apiService = {
         return await handleResponse(response);
     },
 
-  // ==========================================
-// PETICIONES A VENTAS
-// ==========================================
-getVentas: async () => {
-    const response = await fetch(`${API_URL}ventas/`, {
-        headers: getHeaders(),
-    });
-    return await handleResponse(response);
-},
+    // ==========================================
+    // PETICIONES A VENTAS
+    // ==========================================
+    getVentas: async () => {
+        const response = await fetch(`${API_URL}ventas/`, {
+            headers: getHeaders(),
+        });
+        return await handleResponse(response);
+    },
 
-getVenta: async (id) => {
-    const response = await fetch(`${API_URL}ventas/${id}`, {
-        headers: getHeaders(),
-    });
-    return await handleResponse(response);
-},
+    getVenta: async (id) => {
+        const response = await fetch(`${API_URL}ventas/${id}`, {
+            headers: getHeaders(),
+        });
+        return await handleResponse(response);
+    },
 
-procesarVenta: async (venta) => {
-    const token = localStorage.getItem("token");
+    procesarVenta: async (venta) => {
+        const response = await fetch(`${API_URL}ventas/procesar`, {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify(venta),
+        });
 
-    const response = await fetch(`${API_URL}ventas/procesar`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(venta),
-    });
+        return await handleResponse(response);
+    },
 
-    return await handleResponse(response);
-},
+    getMisCompras: async () => {
+        const response = await fetch(`${API_URL}ventas/mis-compras`, {
+            headers: getHeaders(),
+        });
+        return await handleResponse(response);
+    },
 
-getMisCompras: async () => {
-    const response = await fetch(`${API_URL}ventas/mis-compras`, {
-        headers: getHeaders(),
-    });
-    return await handleResponse(response);
-},
+    // ==========================================
+    // PETICIONES A PAGOS (Stripe)
+    // ==========================================
+    crearIntencionPago: async (idVenta) => {
+        const response = await fetch(`${API_URL}pagos/crear-intencion`, {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify({
+                idVenta,
+                moneda: "mxn",
+            }),
+        });
 
-// ==========================================
-// PETICIONES A PAGOS (Stripe)
-// ==========================================
+        return await handleResponse(response);
+    },
 
-// Método para crear intención de pago en Stripe
-crearIntencionPago: async (idVenta) => {
-    const response = await fetch(`${API_URL}pagos/crear-intencion`, {
-        method: "POST",
-        headers: getHeaders(),
-        body: JSON.stringify({
-            idVenta,
-            moneda: "mxn",
-        }),
-    });
+    confirmarPagoVenta: async (idVenta) => {
+        const response = await fetch(`${API_URL}pagos/confirmar-pago/${idVenta}`, {
+            method: "POST",
+            headers: getHeaders(),
+        });
 
-    return await handleResponse(response);
-},
-
-// Método para confirmar pago en backend
-confirmarPagoVenta: async (idVenta) => {
-    const response = await fetch(`${API_URL}pagos/confirmar-pago/${idVenta}`, {
-        method: "POST",
-        headers: getHeaders(),
-    });
-
-    return await handleResponse(response);
-},
+        return await handleResponse(response);
+    },
 };
