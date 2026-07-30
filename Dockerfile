@@ -7,7 +7,7 @@ RUN npm run build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.config /etc/nginx/config.d/default.conf
+COPY nginx.conf /etc/nginx/config.d/default.conf
 
 #Cambia el puerto aquí (ejemplo usando el 3000)
 EXPOSE 5173
