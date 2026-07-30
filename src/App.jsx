@@ -144,7 +144,13 @@ function App() {
         if (!user) {
           return <div className="text-center my-12 text-red-600 font-bold">Inicia sesión para ver tu perfil.</div>;
         }
-        return <ClienteDashboard user={user} />;
+        return (
+          <ClienteDashboard 
+            user={user} 
+            setRenderNow={setRenderNow} 
+            setPedidoAComprar={setVentaActiva} 
+          />
+        );
       case 'checkout':
         return (
           <CheckoutForm 
