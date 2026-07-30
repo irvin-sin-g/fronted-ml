@@ -7,11 +7,11 @@ import {
   CalendarDays,
   Eye,
   X,
-  CreditCard, // 1. Importamos el ícono de tarjeta
+  CreditCard,
 } from "lucide-react";
 import { apiService } from "../services/apiService";
 
-export const ClienteDashboard = ({ user }) => {
+export const ClienteDashboard = ({ user, setRenderNow, setPedidoAComprar }) => {
   const [subVista, setSubVista] = useState("perfil");
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,52 +27,28 @@ export const ClienteDashboard = ({ user }) => {
 
   const cargarPedidos = async () => {
     setLoading(true);
-
     try {
       const datosPedidos = await apiService.getMisCompras();
-
-      datosPedidos.sort(
-        (a, b) => new Date(b.fecha) - new Date(a.fecha)
-      );
-
+      datosPedidos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
       setPedidos(datosPedidos);
     } catch (err) {
       setError("Error al cargar pedidos.");
       console.error(err);
-    } finally {
+    } fontally {
       setLoading(false);
     }
   };
 
-  // 2. Función para procesar o reanudar el pago
-  const reanudarPago = async (pedido) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // Si utilizas la intención de pago para Stripe en el frontend:
-      // const intencion = await apiService.crearIntencionPago(pedido.id);
-
-      // Confirmamos el pago en el servidor
-      await apiService.confirmarPagoVenta(pedido.id);
-      
-      // Recargamos el historial para actualizar los estados
-      await cargarPedidos();
-
-      if (pedidoSeleccionado) {
-        setPedidoSeleccionado(null);
-      }
-    } catch (err) {
-      console.error("Error procesando pago:", err);
-      setError("No se pudo completar el pago. Intenta de nuevo.");
-    } finally {
-      setLoading(false);
+  // Redirigir directamente al componente/vista de Checkout
+  const irAlCheckout = (pedido) => {
+    if (setPedidoAComprar) {
+      setPedidoAComprar(pedido); // Guarda el pedido pendiente en el estado global/padre
     }
+    setRenderNow("checkout"); // Cambia la vista del componente padre (App) a Checkout
   };
 
   const formatearFecha = (fecha) => {
     if (!fecha) return "-";
-
     return new Date(fecha).toLocaleDateString("es-MX", {
       day: "numeric",
       month: "short",
@@ -84,29 +60,20 @@ export const ClienteDashboard = ({ user }) => {
     switch (estado?.toUpperCase()) {
       case "PAGADO":
         return "bg-green-500/10 text-green-400 border border-green-500/30";
-
       case "PENDIENTE":
         return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30";
-
       case "CANCELADO":
         return "bg-red-500/10 text-red-400 border border-red-500/30";
-
       default:
         return "bg-neutral-800 text-neutral-300";
     }
   };
 
-  const totalGastado = pedidos.reduce(
-    (ac, pedido) => ac + (pedido.total || 0),
-    0
-  );
+  const totalGastado = pedidos.reduce((ac, pedido) => ac + (pedido.total || 0), 0);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row gap-5">
-
-      {/* =======================
-            MENU LATERAL
-      ======================== */}
+      {/* MENU LATERAL */}
       <aside className="w-full md:w-52 self-start sticky top-6 bg-neutral-900 rounded-xl border border-neutral-800 p-3 shadow-lg">
         <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-2 px-2">
           Mi Cuenta
@@ -137,18 +104,11 @@ export const ClienteDashboard = ({ user }) => {
         </button>
       </aside>
 
-      {/* =======================
-            PANEL PRINCIPAL
-      ======================== */}
+      {/* PANEL PRINCIPAL */}
       <section className="flex-1 bg-neutral-900 rounded-xl border border-neutral-800 p-5 shadow-lg">
-
-        {/* PERFIL */}
         {subVista === "perfil" && (
           <>
-            <h2 className="text-xl text-white font-bold mb-6">
-              Información del Perfil
-            </h2>
-
+            <h2 className="text-xl text-white font-bold mb-6">Información del Perfil</h2>
             <div className="space-y-4 max-w-md">
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
@@ -171,14 +131,11 @@ export const ClienteDashboard = ({ user }) => {
           </>
         )}
 
-        {/* PEDIDOS */}
         {subVista === "compras" && (
           <>
             <div className="flex justify-between items-center mb-6 border-b border-neutral-800 pb-4">
               <div>
-                <h2 className="text-xl font-bold text-white">
-                  Historial de Pedidos
-                </h2>
+                <h2 className="text-xl font-bold text-white">Historial de Pedidos</h2>
                 <p className="text-xs text-neutral-400 mt-0.5">
                   {pedidos.length} pedidos realizados
                 </p>
@@ -194,11 +151,7 @@ export const ClienteDashboard = ({ user }) => {
               </div>
             </div>
 
-            {loading && (
-              <p className="text-sm text-neutral-400 py-4">
-                Cargando pedidos...
-              </p>
-            )}
+            {loading && <p className="text-sm text-neutral-400 py-4">Cargando pedidos...</p>}
 
             {error && (
               <div className="flex items-center gap-2 text-sm text-red-400 py-4">
@@ -209,10 +162,7 @@ export const ClienteDashboard = ({ user }) => {
 
             {!loading && pedidos.length === 0 && (
               <div className="text-center py-12">
-                <Package
-                  size={48}
-                  className="mx-auto text-neutral-700 mb-3"
-                />
+                <Package size={48} className="mx-auto text-neutral-700 mb-3" />
                 <p className="text-sm text-neutral-400">
                   Todavía no has realizado ninguna compra.
                 </p>
@@ -230,13 +180,11 @@ export const ClienteDashboard = ({ user }) => {
                       <h3 className="text-base text-white font-bold">
                         Pedido #{pedido.id}
                       </h3>
-
                       <div className="flex items-center gap-4 text-xs text-neutral-400 mt-1.5">
                         <span className="flex gap-1.5 items-center">
                           <CalendarDays size={14} />
                           {formatearFecha(pedido.fecha)}
                         </span>
-
                         <span className="flex gap-1.5 items-center">
                           <Package size={14} />
                           {pedido.detalles?.length || 0} prod.
@@ -272,10 +220,10 @@ export const ClienteDashboard = ({ user }) => {
                         Ver detalles
                       </button>
 
-                      {/* 3. Botón para pagar si está pendiente en la lista */}
+                      {/* REDIRIGE AL PROCESO DE CHECKOUT DE LA APLICACIÓN */}
                       {pedido.estadoPago?.toUpperCase() === "PENDIENTE" && (
                         <button
-                          onClick={() => reanudarPago(pedido)}
+                          onClick={() => irAlCheckout(pedido)}
                           className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs px-3.5 py-1.5 rounded-lg transition"
                         >
                           <CreditCard size={15} />
@@ -291,14 +239,10 @@ export const ClienteDashboard = ({ user }) => {
         )}
       </section>
 
-      {/* ==========================================================
-                  MODAL DETALLE DEL PEDIDO
-      ========================================================== */}
+      {/* MODAL DETALLE DEL PEDIDO */}
       {pedidoSeleccionado && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-center items-center p-4">
           <div className="bg-neutral-900 border border-neutral-800 rounded-xl w-full max-w-2xl shadow-2xl overflow-hidden">
-
-            {/* Encabezado */}
             <div className="flex justify-between items-center border-b border-neutral-800 px-5 py-4">
               <div>
                 <h2 className="text-lg font-bold text-white">
@@ -317,7 +261,6 @@ export const ClienteDashboard = ({ user }) => {
               </button>
             </div>
 
-            {/* Estado */}
             <div className="px-5 pt-3">
               <span
                 className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${obtenerColorEstado(
@@ -328,7 +271,6 @@ export const ClienteDashboard = ({ user }) => {
               </span>
             </div>
 
-            {/* Productos */}
             <div className="p-5 max-h-[50vh] overflow-y-auto space-y-3">
               {pedidoSeleccionado.detalles?.map((detalle) => (
                 <div
@@ -382,7 +324,6 @@ export const ClienteDashboard = ({ user }) => {
               ))}
             </div>
 
-            {/* Footer Modal */}
             <div className="border-t border-neutral-800 px-5 py-4 flex justify-between items-center">
               <div>
                 <p className="text-neutral-500 uppercase text-[10px] font-semibold">
@@ -401,10 +342,9 @@ export const ClienteDashboard = ({ user }) => {
                   Cerrar
                 </button>
 
-                {/* 3. Botón para pagar directamente dentro del modal */}
                 {pedidoSeleccionado.estadoPago?.toUpperCase() === "PENDIENTE" && (
                   <button
-                    onClick={() => reanudarPago(pedidoSeleccionado)}
+                    onClick={() => irAlCheckout(pedidoSeleccionado)}
                     className="bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs px-5 py-2 rounded-lg transition flex items-center gap-2"
                   >
                     <CreditCard size={16} />
@@ -413,11 +353,9 @@ export const ClienteDashboard = ({ user }) => {
                 )}
               </div>
             </div>
-
           </div>
         </div>
       )}
-
     </div>
   );
 };
