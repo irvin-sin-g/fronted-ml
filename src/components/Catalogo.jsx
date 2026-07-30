@@ -41,24 +41,28 @@ export const Catalogo = ({ setRenderNow, user, AddToCart }) => {
   };
 
   const filtroProductos = productos.filter((producto) => {
-  // 1. Buscador por texto
+  // 1. Buscador por texto (sin modificar)
   const busqueda = 
     producto.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (producto.descripcion && producto.descripcion.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  // 2. Filtro de Categoría por Nombre o por ID relacionando con la lista de categorías
+  // 2. Filtro de Categoría a prueba de fallos
   if (selecionCategoria === 'Todos') return busqueda;
 
-  // Encontramos el ID de la categoría seleccionada en los botones
-  const catObjetoSeleccionado = categorias.find(c => c.nombre.toLowerCase() === selecionCategoria.toLowerCase());
-  const selectedId = catObjetoSeleccionado ? catObjetoSeleccionado.id : null;
+  // Buscamos cuál es el ID de la categoría seleccionada en el botón
+  const catBoton = categorias.find(
+    (c) => c.nombre?.trim().toLowerCase() === selecionCategoria.trim().toLowerCase()
+  );
+  const targetId = catBoton ? catBoton.id : null;
 
+  // Comprobamos todas las formas en las que el backend podría enviar la relación
   const coincideCategoria = 
-    // Si viene como objeto
-    producto.categoria?.nombre?.toLowerCase() === selecionCategoria.toLowerCase() ||
-    // Si viene como ID plano
-    (selectedId && producto.categoriaId === selectedId) ||
-    (selectedId && producto.categoria?.id === selectedId);
+    // Comparación 1: Si producto.categoria es objeto { id, nombre }
+    producto.categoria?.nombre?.trim().toLowerCase() === selecionCategoria.trim().toLowerCase() ||
+    // Comparación 2: Si coinciden por ID (producto.categoria.id === catBoton.id)
+    (targetId && producto.categoria?.id === targetId) ||
+    // Comparación 3: Si viene como propiedad plana (producto.categoriaId === catBoton.id)
+    (targetId && Number(producto.categoriaId) === Number(targetId));
 
   return busqueda && coincideCategoria;
 });
