@@ -36,7 +36,7 @@ export const Login = ({ onLoginSuccess, onGoToRegister }) => {
           </div>
           <h2 className="text-2xl font-bold text-white">¡Bienvenido de nuevo!</h2>
           <p className="text-neutral-400 mt-1 text-xs">
-            Inicia sesión en tu cuenta de MercaditoLibre
+            Inicia sesión en tu cuenta de Megaklic
           </p>
         </div>
 
