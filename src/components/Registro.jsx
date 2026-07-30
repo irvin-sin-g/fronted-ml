@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { apiService } from '../services/apiService';
 import { 
   UserPlus, User, Mail, Lock, Phone, MapPin,
-  Shield, AlertCircle, CheckCircle, Loader2
+  AlertCircle, CheckCircle, Loader2
 } from 'lucide-react';
 
 export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
   const [nombre, setNombre] = useState('');
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [rol, setRol] = useState('ROLE_CLIENTE');
   const [telefono, setTelefono] = useState('');
   const [direccion, setDireccion] = useState('');
+
+  // Rol fijo por defecto
+  const rol = 'ROLE_CLIENTE';
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -27,9 +29,9 @@ export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
       username,
       password,
       nombre,
-      rol,
-      telefono: rol === 'ROLE_CLIENTE' ? telefono : null,
-      direccion: rol === 'ROLE_CLIENTE' ? direccion : null,    
+      rol, // siempre ROLE_CLIENTE
+      telefono,
+      direccion,
     };
 
     try {
@@ -49,7 +51,7 @@ export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
     <div className="min-h-screen bg-neutral-950 flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-md bg-neutral-900 rounded-2xl shadow-2xl overflow-hidden border border-neutral-800">
         
-        {/* Encabezado del panel */}
+        {/* Encabezado */}
         <div className="p-6 bg-neutral-900 border-b border-neutral-800 flex items-center gap-4">
           <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-500">
             <UserPlus className="w-6 h-6" />
@@ -60,25 +62,24 @@ export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
           </div>
         </div>
 
-        {/* Formulario principal */}
+        {/* Formulario */}
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4 text-neutral-200">
           
           {/* Alertas */}
           {error && (
             <div className="bg-red-500/10 text-red-400 p-3.5 rounded-xl flex items-start gap-2.5 border border-red-500/20 text-xs">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
-
           {success && (
             <div className="bg-emerald-500/10 text-emerald-400 p-3.5 rounded-xl flex items-start gap-2.5 border border-emerald-500/20 text-xs">
-              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{success}</span>
             </div>
           )}
 
-          {/* Nombre Completo */}
+          {/* Nombre */}
           <div>
             <label className="block text-xs font-semibold text-neutral-300 mb-1.5 flex items-center gap-2">
               <User className="w-3.5 h-3.5 text-amber-500" /> Nombre Completo
@@ -89,11 +90,11 @@ export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               placeholder="Juan Pérez"
-              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm placeholder-neutral-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm"
             />
           </div>
 
-          {/* Correo Electrónico */}
+          {/* Correo */}
           <div>
             <label className="block text-xs font-semibold text-neutral-300 mb-1.5 flex items-center gap-2">
               <Mail className="w-3.5 h-3.5 text-amber-500" /> Correo Electrónico
@@ -104,7 +105,7 @@ export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
               value={username}
               onChange={(e) => setUserName(e.target.value)}
               placeholder="correo@ejemplo.com"
-              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm placeholder-neutral-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm"
             />
           </div>
 
@@ -119,64 +120,46 @@ export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Mínimo 6 caracteres"
-              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm placeholder-neutral-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
               minLength={6}
+              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm"
             />
           </div>
 
-          {/* Selector de Rol */}
+          {/* Teléfono */}
           <div>
             <label className="block text-xs font-semibold text-neutral-300 mb-1.5 flex items-center gap-2">
-              <Shield className="w-3.5 h-3.5 text-amber-500" /> Rol de Usuario
+              <Phone className="w-3.5 h-3.5 text-amber-500" /> Teléfono
             </label>
-            <select
-              value={rol}
-              onChange={(e) => setRol(e.target.value)}
-              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 cursor-pointer transition-all"
-            >
-              <option value="ROLE_CLIENTE">Cliente (Comprador)</option>
-              <option value="ROLE_ADMIN">Administrador (El Jefazo)</option>
-            </select>
+            <input 
+              type="tel"
+              required
+              value={telefono}
+              onChange={(e) => setTelefono(e.target.value)}
+              placeholder="7471234567"
+              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm"
+            />
           </div>
 
-          {/* Campos condicionales para Cliente */}
-          {rol === 'ROLE_CLIENTE' && (
-            <>
-              <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1.5 flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5 text-amber-500" /> Teléfono
-                </label>
-                <input 
-                  type="tel"
-                  required
-                  value={telefono}
-                  onChange={(e) => setTelefono(e.target.value)}
-                  placeholder="7471234567"
-                  className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm placeholder-neutral-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
-                />
-              </div>
+          {/* Dirección */}
+          <div>
+            <label className="block text-xs font-semibold text-neutral-300 mb-1.5 flex items-center gap-2">
+              <MapPin className="w-3.5 h-3.5 text-amber-500" /> Dirección
+            </label>
+            <input 
+              type="text"
+              required
+              value={direccion}
+              onChange={(e) => setDireccion(e.target.value)}
+              placeholder="Av. Central #123, Col. Centro"
+              className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm"
+            />
+          </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1.5 flex items-center gap-2">
-                  <MapPin className="w-3.5 h-3.5 text-amber-500" /> Dirección
-                </label>
-                <input 
-                  type="text"
-                  required
-                  value={direccion}
-                  onChange={(e) => setDireccion(e.target.value)}
-                  placeholder="Av. Central #123, Col. Centro"
-                  className="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm placeholder-neutral-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
-                />
-              </div>
-            </>
-          )}
-
-          {/* Botón de registro */}
+          {/* Botón */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 p-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 font-bold text-neutral-950 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+            className="w-full mt-2 p-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 font-bold text-neutral-950 text-sm flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -192,18 +175,17 @@ export const Registro = ({ onRegisterSuccess, onGoToLogin }) => {
           </button>
         </form>
 
-        {/* Footer para ir al Login */}
+        {/* Footer */}
         <div className="p-4 bg-neutral-950/50 border-t border-neutral-800 text-center text-xs text-neutral-400">
           ¿Ya tienes cuenta?{' '}
           <button 
             type="button"
             onClick={onGoToLogin}
-            className="text-amber-500 font-semibold hover:underline cursor-pointer"
+            className="text-amber-500 font-semibold hover:underline"
           >
             Inicia sesión aquí
           </button>
         </div>
-
       </div>
     </div>
   );
